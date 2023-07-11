@@ -1,0 +1,95 @@
+from flask import Flask, jsonify, request
+from waitress import serve
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
+from replit import db
+import json
+
+# Retrieve the inserted jobs as an ObservedDict
+#jobs_observed = db['jobs']
+
+# Convert ObservedDict to a regular dictionary
+#jobs1 = dict(jobs_observed)
+
+# Print the jobs in JSON format
+#jobs = json.dumps(jobs1)
+#print(jobs)
+#print(list(db.keys()))
+#for key in db.keys():
+#  del db[key]
+
+
+#print(list(db.keys()))
+#del db["products"]
+# Endpoint to retrieve all jobs
+@app.route('/jobs', methods=['GET'])
+def get_all_jobs():
+
+  #all_jobs = {key: db[key] for key in db.keys()}
+  filtered_jobs = {key: db[key] for key in db.keys() if key.startswith("job")}
+  return jsonify(filtered_jobs)
+
+
+# Endpoint to retrieve a specific job by ID
+@app.route('/jobs/<int:job_id>', methods=['GET'])
+def get_job_by_id(job_id):
+  job = next((job for job in jobs if job['id'] == job_id), None)
+  if job:
+    return jsonify(job)
+  else:
+    return jsonify({'message': 'Position not found'}), 404
+
+
+# Endpoint to insert a new job
+@app.route('/jobs', methods=['POST'])
+def insert_job():
+  jobs = {}  # initialize jobs as a dictionary
+  new_job = json.loads(request.get_data(as_text=True))
+  print(type(new_job))  # This will print the type of new_job
+  print(new_job)  # This will print the value of new_job
+
+  try:
+    new_job = json.loads(new_job)
+  except json.JSONDecodeError:
+    return "Error: Data is not in JSON format", 400
+
+  job_id = new_job.get('id')
+  print(job_id)
+  jobs[job_id] = new_job
+  key = 'jobs' + str(job_id)
+  db[key] = json.dumps(new_job)
+  return jsonify(new_job), 201
+
+# Endpoint to retrieve all applicants
+@app.route('/applicants', methods=['GET'])
+def get_all_applicants():
+
+  #all_applicants = {key: db[key] for key in db.keys()}
+  filtered_applicants = {key: db[key] for key in db.keys() if key.startswith("applicants")}
+  return jsonify(filtered_applicants)
+
+# Endpoint to insert a new applicants
+@app.route('/applicants', methods=['POST'])
+def insert_applicant():
+  applicants = {}  # initialize jobs as a dictionary
+  new_applicant = json.loads(request.get_data(as_text=True))
+  print(type(new_applicant))  # This will print the type of new_applicants
+  print(new_applicant)  # This will print the value of new_applicants
+
+  try:
+    new_applicant = json.loads(new_applicant)
+  except json.JSONDecodeError:
+    return "Error: Data is not in JSON format", 400
+
+  applicant_id = new_applicant.get('id')
+  print(applicant_id)
+  applicants[applicant_id] = new_applicant
+  key = 'applicants' + str(applicant_id)
+  db[key] = json.dumps(new_applicant)
+  return jsonify(new_applicant), 201
+
+
+if __name__ == '__main__':
+  serve(app, host='0.0.0.0', port=50100)
