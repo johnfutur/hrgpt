@@ -1,0 +1,10 @@
+1) npx create-react-app hrgpt
+2) npm install @material-ui/core --force
+3) npm start
+3) npm add @material-ui/icons --force
+
+
+
+1) npx create-react-app react-admin
+2) npm i @mui/material @emotion/react @emontion/styled @mui/x-data-grid @mui/icons-material react-router-dom@6 react-pro-sidebar formik yup @fullcalendar/core @fullcalendar/daygrid @fullcalendar/timegrid @fullcalendar/list @nivo/core @nivo/pie @nivo/line @nivo/bar @nivo/geo --force
+3) delete app.css, app.test.js, logo.svg, reportwebvitals.js and setuptests.js
